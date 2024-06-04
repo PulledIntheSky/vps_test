@@ -1,7 +1,7 @@
 const WebSocket = require('ws');
 
 async function handleRequest(request) {
-  const url = 'http://futureprojects.cloudns.org:3000'; // Replace with your tunnel URL
+  const url = 'https://futureprojects.cloudns.org:3000'; // Replace with your tunnel URL
   const socket = new WebSocket(url);
 
   // Event handler for WebSocket connection open
