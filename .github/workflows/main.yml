@@ -23,4 +23,4 @@ jobs:
           npm install express node-pty ws
 
       - name: Running Websocket
-        run: node websocket.js
+        run: sudo node websocket.js
