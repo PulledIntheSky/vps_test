@@ -51,4 +51,7 @@ jobs:
           echo "  - service: http_status:404" >> config.yml
           sudo mv config.yml /etc/cloudflared/
 
+      - name: Start Cloudflare Tunnel
+        run: cloudflared tunnel run my-tunnel
+
           
