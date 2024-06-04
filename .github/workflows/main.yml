@@ -45,6 +45,16 @@ jobs:
           echo "Tunnel ID: $TUNNEL_ID"  # For debugging
           echo "TUNNEL_ID=$TUNNEL_ID" >> $GITHUB_ENV
 
+      - name: Retrieve Public IPv4 and IPv6 addresses
+        id: get-public-ips
+        run: |
+          IPv4=$(curl -s https://ipinfo.io/ip)
+          IPv6=$(curl -s https://api64.ipify.org)
+          echo "Public IPv4: $IPv4"
+          echo "Public IPv6: $IPv6"
+          echo "PUBLIC_IPV4=$IPv4" >> $GITHUB_ENV
+          echo "PUBLIC_IPV6=$IPv6" >> $GITHUB_ENV
+
       - name: Move Tunnel Credentials
         run: |
           sudo mkdir -p /etc/cloudflared
@@ -56,7 +66,7 @@ jobs:
           echo "credentials-file: /etc/cloudflared/${{ env.TUNNEL_ID }}.json" >> config.yml
           echo "ingress:" >> config.yml
           echo "  - hostname: futureprojects.cloudns.org" >> config.yml  # Replace with your domain
-          echo "    service: http://localhost:3000" >> config.yml
+          echo "    service: tcp://localhost:3000" >> config.yml
           echo "  - service: http_status:404" >> config.yml
           sudo mv config.yml /etc/cloudflared/
           cloudflared tunnel route dns ${{ env.TUNNEL_ID }} futureprojects.cloudns.org
