@@ -12,7 +12,7 @@
         const term = new Terminal();
         term.open(document.getElementById('terminal'));
 
-        const socket = new WebSocket('wss://38.83.114.104:3000');
+        const socket = new WebSocket('wss://38.83.114.104:3000'); 
 
         socket.onmessage = (event) => {
             term.write(event.data);
