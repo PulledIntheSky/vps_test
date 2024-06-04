@@ -1,45 +1,41 @@
-name: Setup Cloudflare Tunnel for RDP
+name: Update Cloudflare DNS with IPv4
 
 on:
   push:
-    branches:
-      - main  # Run the workflow on push to the main branch
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  setup-tunnel:
-    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+  update:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
- 
-      - name: Setup Node.js 20
-        uses: actions/setup-node@v2
-        with:
-          node-version: 20
-  
-      - name: Install Express, node-pty, ws and fs 
-        run: |
-          npm install express node-pty ws fs
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Install Cloudflared
-        run: |
-          sudo apt-get update
-          sudo ufw allow 3000/tcp
-          sudo ufw reload
+    - name: Install Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'
 
-      - name: Retrieve Public IPv4 and IPv6 addresses
-        id: get-public-ips
-        run: |
-          IPv4=$(curl -s https://ipinfo.io/ip)
-          IPv6=$(curl -s https://api64.ipify.org)
-          echo "Public IPv4: $IPv4"
-          echo "Public IPv6: $IPv6"
-          echo "PUBLIC_IPV4=$IPv4" >> $GITHUB_ENV 
-          echo "PUBLIC_IPV6=$IPv6" >> $GITHUB_ENV
+    - name: Install dependencies
+      run: npm ci
 
-      - name: Run Express server
-        run: |
-          nohup node server.js 
+    - name: Install Warp client
+      run: |
+        sudo apt install cloudflare-warp
+        warp-cli registration new
+        warp-cli connect
 
-     
+    - name: Start server
+      run: |
+        node server.js &
+        sleep 5  # Give the server some time to start
+
+    - name: Update Cloudflare DNS with IPv4
+      run: |
+        curl -X PUT "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records/${{ secrets.DNS_RECORD_ID }}" \
+        -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+        -H "Content-Type: application/json" \
+        --data '{"type":"A","name":"futureprojects.cloudns.org","content":"'"${{ env.PUBLIC_IPV4 }}"'","proxied":true,"ttl":120}'
