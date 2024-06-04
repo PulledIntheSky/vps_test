@@ -29,7 +29,7 @@ jobs:
         echo "deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ bookworm main" | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
         sudo apt-get update && sudo apt-get install cloudflare-warp
 
-        warp-cli registration new
+        warp-cli registration new --accept-tos
         warp-cli connect
 
     - name: Start server
