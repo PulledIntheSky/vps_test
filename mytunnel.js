@@ -1,26 +1,19 @@
-// Cloudflare Worker code
-addEventListener('fetch', event => {
-  event.respondWith(handleRequest(event.request))
-})
+const WebSocket = require('ws');
 
 async function handleRequest(request) {
   const url = 'wss://https://dash.cloudflare.com/argotunnel?aud=&callback=https%3A%2F%2Flogin.cloudflareaccess.org%2FtKAsG9ruPoeDCJ6B2f-bPI3xGSgGVbNARPVLMlZ3KBE%3D'; // Replace with your tunnel URL
   const socket = new WebSocket(url);
 
-  socket.onopen = event => {
-    console.log('WebSocket connection established');
-    // Send data or perform other actions once the connection is open 
-  };
+// Event handler for WebSocket connection open
+socket.on('open', () => {
+  console.log('WebSocket connection established');
 
-  socket.onmessage = event => {
-    console.log('Received message:', event.data);
-    // Process incoming messages from the WebSocket server
-  };
+  // Send a test message
+  const message = 'Hello from Node.js!';
+  socket.send(message);
+});
 
-  socket.onerror = error => {
-    console.error('WebSocket error:', error);
-    // Handle WebSocket errors
-  };
-
-  // Return a response or perform other actions as needed
-}
+// Event handler for incoming messages
+socket.on('message', (data) => {
+  console.log('Received message:', data);
+});
