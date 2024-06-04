@@ -12,7 +12,7 @@
         const term = new Terminal();
         term.open(document.getElementById('terminal'));
 
-        const socket = new WebSocket('ws://' + "${{ env.PUBLIC_IPV4 }}");
+        const socket = new WebSocket('wss://' + "${{ env.PUBLIC_IPV4 }}");
 
         socket.onmessage = (event) => {
             term.write(event.data);
