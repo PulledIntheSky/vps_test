@@ -13,7 +13,7 @@ async function handleRequest(request) {
     socket.send(message);
   });
 
-  // Event handler for incoming messages
+  // Event handler for incoming messages 
   socket.on('message', (data) => {
     console.log('Received message:', data);
   });
