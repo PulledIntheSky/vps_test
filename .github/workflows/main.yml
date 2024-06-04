@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 20
- 
+  
       - name: Install Express, node-pty, and ws 
         run: |
           npm install express node-pty ws
@@ -25,10 +25,6 @@ jobs:
       - name: Install Cloudflared
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget
-          wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-          sudo dpkg -i cloudflared-linux-amd64.deb
-
           sudo ufw allow 3000/tcp
           sudo ufw reload
 
