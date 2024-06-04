@@ -29,8 +29,15 @@ jobs:
         echo "deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ bookworm main" | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
         sudo apt-get update && sudo apt-get install cloudflare-warp
 
-        warp-cli registration new --accept-tos
-        warp-cli connect
+    - name: Register and Connect Warp
+      run: |
+        sudo warp-cli register --accept-tos
+        sudo warp-cli connect
+
+    - name: Capture Public IPv4
+      run: |
+        PUBLIC_IPV4=$(curl -s http://checkip.amazonaws.com)
+        echo "PUBLIC_IPV4=$PUBLIC_IPV4" >> $GITHUB_ENV
 
     - name: Start server
       run: |
