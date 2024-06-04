@@ -1,6 +1,17 @@
+const http = require('http');
+const express = require('express');
 const WebSocket = require('ws');
+const pty = require('node-pty');
+const path = require('path');
+const fs = require('fs');
 
-const wss = new WebSocket.Server();
+const app = express();
+
+// Serve static files from the root directory
+app.use(express.static(path.join(__dirname)));
+
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
 
 wss.on('connection', function connection(ws) {
   console.log('Local WebSocket server connected.');
@@ -31,6 +42,8 @@ wss.on('connection', function connection(ws) {
     // Forward message to Cloudflare Worker WebSocket
     // Modify this part based on your Cloudflare Worker WebSocket URL
   });
+});
 
-  
+server.listen(80, () => {
+  console.log('Server is listening on port 80');
 });
