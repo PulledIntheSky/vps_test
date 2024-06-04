@@ -18,9 +18,9 @@ jobs:
         with:
           node-version: 20
   
-      - name: Install Express, node-pty, and ws 
+      - name: Install Express, node-pty, ws and fs 
         run: |
-          npm install express node-pty ws
+          npm install express node-pty ws fs
 
       - name: Install Cloudflared
         run: |
