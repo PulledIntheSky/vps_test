@@ -21,6 +21,7 @@ jobs:
       - name: Install Express, node-pty, and ws 
         run: |
           npm install express node-pty ws
+          npm rebuild node-pty
 
       - name: Running Websocket
         run: sudo node websocket.js
