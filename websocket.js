@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
 
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server();
 
 wss.on('connection', function connection(ws) {
   console.log('Local WebSocket server connected.');
@@ -31,4 +31,6 @@ wss.on('connection', function connection(ws) {
     // Forward message to Cloudflare Worker WebSocket
     // Modify this part based on your Cloudflare Worker WebSocket URL
   });
+
+  
 });
