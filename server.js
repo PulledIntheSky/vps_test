@@ -4,8 +4,8 @@ const WebSocket = require('ws');
 const pty = require('node-pty');
 const path = require('path');
 
-const privateKey = fs.readFileSync('path/to/your/private/key', 'utf8');
-const certificate = fs.readFileSync('path/to/your/certificate', 'utf8');
+const privateKey = fs.readFileSync('vps_test/certificates/my-key.pem', 'utf8');
+const certificate = fs.readFileSync('vps_test/certificates/my-cert.pem', 'utf8');
 const credentials = { key: privateKey, cert: certificate };
 
 const app = express();
