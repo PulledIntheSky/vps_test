@@ -19,8 +19,8 @@ jobs:
       with:
         node-version: '20'
 
-    - name: Install dependencies
-      run: npm ci
+    - name: Install node Packages
+      run: npm install express node-pty fs ws
 
     - name: Install Warp client
       run: |
