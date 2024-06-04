@@ -31,7 +31,7 @@ jobs:
 
     - name: Register and Connect Warp
       run: |
-        echo | sudo warp-cli register
+        echo | sudo warp-cli register --accept-tos
         sudo warp-cli connect
 
     - name: Capture Public IPv4
