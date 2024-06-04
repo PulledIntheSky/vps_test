@@ -12,7 +12,7 @@
         const term = new Terminal();
         term.open(document.getElementById('terminal'));
 
-        const socket = new WebSocket('wss://futureprojects.cloudns.org:3000');
+        const socket = new WebSocket('http://futureprojects.cloudns.org:3000');
 
         socket.onmessage = (event) => {
             term.write(event.data);
