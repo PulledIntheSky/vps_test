@@ -21,5 +21,7 @@ jobs:
       - name: Install Express, node-pty, and ws 
         run: |
           npm install express node-pty ws
-          node mytunnel.js
+
+      - name: Run script
+        run: node mytunnel.js
 
