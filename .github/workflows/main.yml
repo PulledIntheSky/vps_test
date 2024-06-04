@@ -16,12 +16,11 @@ jobs:
       - name: Setup Node.js 20
         uses: actions/setup-node@v2
         with:
-          node-version: 20
+          node-version: 18
  
       - name: Install Express, node-pty, and ws 
         run: |
           npm install express node-pty ws
-          npm rebuild node-pty
 
       - name: Running Websocket
         run: sudo node websocket.js
