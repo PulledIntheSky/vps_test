@@ -54,15 +54,32 @@ jobs:
           sudo mkdir -p /etc/cloudflared
           sudo mv ~/.cloudflared/${{ env.TUNNEL_ID }}.json /etc/cloudflared/${{ env.TUNNEL_ID }}.json
 
+      - name: Retrieve Public IPv4 and IPv6 addresses
+        id: get-public-ips
+        run: |
+          IPv4=$(curl -s https://ipinfo.io/ip)
+          IPv6=$(curl -s https://api64.ipify.org)
+          echo "Public IPv4: $IPv4"
+          echo "Public IPv6: $IPv6"
+          echo "PUBLIC_IPV4=$IPv4" >> $GITHUB_ENV
+          echo "PUBLIC_IPV6=$IPv6" >> $GITHUB_ENV
+
       - name: Configure Tunnel
         run: |
           echo "tunnel: ${{ env.TUNNEL_ID }}" > config.yml
           echo "credentials-file: /etc/cloudflared/${{ env.TUNNEL_ID }}.json" >> config.yml
           echo "ingress:" >> config.yml
-          echo "  - hostname: futureprojects.cloudns.org" >> config.yml  # Replace with your domain
+          echo "  - hostname: $IPv4" >> config.yml  # Replace with your domain
           echo "    service: http://localhost:3000" >> config.yml
           echo "  - service: http_status:404" >> config.yml
           sudo mv config.yml /etc/cloudflared/
 
+      - name: Update Cloudflare DNS with IPv4
+        run: |
+          curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records" \
+          -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          --data '{"type":"A","name":"'"${{ env.PUBLIC_IPV4 }}"'","content":"'"${{ env.TUNNEL_ID }}.cfargotunnel.com"'","proxied":true,"ttl":120}'
+      
       - name: Start Cloudflare Tunnel
         run: cloudflared tunnel run my-tunnel
