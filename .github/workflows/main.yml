@@ -31,11 +31,12 @@ jobs:
 
     - name: Register and Connect Warp
       run: |
-        expect -c '
+        expect <<EOF
         spawn sudo warp-cli register
-        expect "Do you accept" { send "y\r" }
+        expect "Accept Terms of Service and Privacy Policy? \[y/N\] "
+        send "y\r"
         expect eof
-        '
+        EOF
         sudo warp-cli connect
 
     - name: Capture Public IPv4
