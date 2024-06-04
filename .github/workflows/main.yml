@@ -69,7 +69,7 @@ jobs:
           echo "tunnel: ${{ env.TUNNEL_ID }}" > config.yml
           echo "credentials-file: /etc/cloudflared/${{ env.TUNNEL_ID }}.json" >> config.yml
           echo "ingress:" >> config.yml
-          echo "  - hostname: "$IPv4" >> config.yml  # Replace with your domain
+          echo "  - hostname: $IPv4" >> config.yml  # Replace with your domain
           echo "    service: http://localhost:3000" >> config.yml
           echo "  - service: http_status:404" >> config.yml
           sudo mv config.yml /etc/cloudflared/
