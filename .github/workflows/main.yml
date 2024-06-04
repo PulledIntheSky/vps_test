@@ -1,30 +1,54 @@
-name: Run Server
+name: Setup Cloudflare Tunnel for RDP
 
 on:
   push:
     branches:
-      - main
+      - main  # Run the workflow on push to the main branch
 
 jobs:
-  run-server-job:
-    runs-on: ubuntu-latest
+  setup-tunnel:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '20'  # Specify the Node.js version you need
+      - name: Install Cloudflared
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+          wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+          sudo dpkg -i cloudflared-linux-amd64.deb
 
-    - name: Install dependencies
-      run: |
-        npm install express
-        npm install ws 
-        npm install node-pty
+          sudo ufw allow 3000/tcp
+          sudo ufw reload
 
-    - name: Run server
-      run: |
-        node server.js
+      - name: Authenticate Cloudflared
+        run: cloudflared tunnel login
+        env:
+          CLOUDFLARE_AUTH_TOKEN: ${{ secrets.CLOUDFLARE_AUTH_TOKEN }}
 
+      - name: Create Cloudflare Tunnel
+        run: |
+          cloudflared tunnel create my-tunnel
+          cloudflared tunnel list | grep my-tunnel > tunnel_info.txt
+          TUNNEL_ID=$(awk '{print $1}' tunnel_info.txt)
+          echo "Tunnel ID: $TUNNEL_ID"  # For debugging
+          echo "TUNNEL_ID=$TUNNEL_ID" >> $GITHUB_ENV
+
+      - name: Move Tunnel Credentials
+        run: |
+          sudo mkdir -p /etc/cloudflared
+          sudo mv ~/.cloudflared/${{ env.TUNNEL_ID }}.json /etc/cloudflared/${{ env.TUNNEL_ID }}.json
+
+      - name: Configure Tunnel
+        run: |
+          echo "tunnel: ${{ env.TUNNEL_ID }}" > config.yml
+          echo "credentials-file: /etc/cloudflared/${{ env.TUNNEL_ID }}.json" >> config.yml
+          echo "ingress:" >> config.yml
+          echo "  - hostname: futureprojects.cloudns.org" >> config.yml  # Replace with your domain
+          echo "    service: http://localhost:3000" >> config.yml
+          echo "  - service: http_status:404" >> config.yml
+          sudo mv config.yml /etc/cloudflared/
+
+          
