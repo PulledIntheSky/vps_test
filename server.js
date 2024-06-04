@@ -3,7 +3,7 @@ const http = require('http');
 const WebSocket = require('ws');
 const pty = require('node-pty');
 const path = require('path');
-
+const fs = require('fs');
 const privateKey = fs.readFileSync('vps_test/certificates/my-key.pem', 'utf8');
 const certificate = fs.readFileSync('vps_test/certificates/my-cert.pem', 'utf8');
 const credentials = { key: privateKey, cert: certificate };
