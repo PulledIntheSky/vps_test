@@ -24,6 +24,7 @@ jobs:
 
     - name: Install Warp client
       run: |
+        sudo apt update
         sudo apt install cloudflare-warp
         warp-cli registration new
         warp-cli connect
