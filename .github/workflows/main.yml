@@ -26,5 +26,5 @@ jobs:
 
     - name: Run server
       run: |
-        node vps_test/server.js
+        node server.js
 
