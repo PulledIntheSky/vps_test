@@ -23,5 +23,5 @@ jobs:
           npm install express node-pty ws
 
       - name: Run script
-        run: node vps_test/mytunnel.js
+        run: node mytunnel.js
 
