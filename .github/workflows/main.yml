@@ -35,7 +35,7 @@ jobs:
           IPv6=$(curl -s https://api64.ipify.org)
           echo "Public IPv4: $IPv4"
           echo "Public IPv6: $IPv6"
-          echo "PUBLIC_IPV4=$IPv4" >> $GITHUB_ENV
+          echo "PUBLIC_IPV4=$IPv4" >> $GITHUB_ENV 
           echo "PUBLIC_IPV6=$IPv6" >> $GITHUB_ENV
 
       - name: Run Express server
