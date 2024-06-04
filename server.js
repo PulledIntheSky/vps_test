@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname)));
 
 // WebSocket connection
 wss.on('connection', (ws) => {
-  const shell = process.env.SHELL || 'cmd.exe';
+  const shell = process.env.SHELL || '/bin/bash';
   const ptyProcess = pty.spawn(shell, [], {
     name: 'xterm-color',
     cols: 80,
