@@ -31,8 +31,11 @@ jobs:
 
     - name: Register and Connect Warp
       run: |
-        sudo warp-cli register --accept-tos
-        sudo warp-cli-register
+        expect -c '
+        spawn sudo warp-cli register
+        expect "Do you accept" { send "y\r" }
+        expect eof
+        '
         sudo warp-cli connect
 
     - name: Capture Public IPv4
