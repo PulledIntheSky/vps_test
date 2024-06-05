@@ -1,9 +1,9 @@
-name: Blazor Terminal
+name: Build and Run Blazor Project
 
 on:
   push:
     branches:
-      - main  # Run the workflow on push to the main branch
+      - main
 
 jobs:
   build:
@@ -20,10 +20,11 @@ jobs:
 
       - name: Build and Test
         run: |
+          cd YourBlazorProjectName
           dotnet build -c Release
           dotnet test
 
       - name: Run Blazor Application
         run: |
-          dotnet add package BlazorTerminal
-          dotnet run 
+          cd YourBlazorProjectName
+          dotnet run
