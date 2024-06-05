@@ -1,0 +1,29 @@
+name: Blazor Terminal
+
+on:
+  push:
+    branches:
+      - main  # Run the workflow on push to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
+
+      - name: Build and Test
+        run: |
+          dotnet build -c Release
+          dotnet test
+
+      - name: Run Blazor Application
+        run: |
+          dotnet add package BlazorTerminal
+          dotnet run 
